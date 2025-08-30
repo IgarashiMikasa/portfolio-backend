@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.app.mapper.UserMapper">
+<!-- ログインIDでユーザーを検索 -->
+<select id="findByLoginId" resultType="User">
+   select * from users
+   where login_id = #{loginId}
+</select>
+<!-- 新規ユーザーを登録 -->
+<insert id="insertUser">
+   insert into users (name, login_id, login_pass)
+   values (#{name}, #{loginId}, #{loginPass})
+</insert>
+<!-- 最終ログイン日時を更新 -->
+<update id="updateLastLoginAt">
+   update users
+   set last_login_at = #{loginTime}
+   where login_id = #{loginId}
+</update>
+<!-- 最終ログアウト日時を更新 -->
+<update id="updateLastLogoutAt" >
+    update users
+    set last_logout_at = #{lastLogoutAt}
+    where login_id = #{loginId}
+</update>
+</mapper>

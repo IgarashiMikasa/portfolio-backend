@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.app.mapper.ProductMapper">
+
+<!-- 商品一覧を取得 -->
+<select id="findAll" resultType="Product">
+    SELECT p.*, c.name AS categoryName
+    FROM products p
+    LEFT JOIN categories c ON p.category_id = c.id
+</select>
+
+<!-- 商品IDで1件取得 -->
+<select id="findById" parameterType="int" resultType="Product">
+    SELECT p.*, c.name AS categoryName
+    FROM products p
+    LEFT JOIN categories c ON p.category_id = c.id
+    WHERE p.id = #{id}
+</select>
+
+<select id="findByKeywordAndCategory" parameterType="map" resultType="Product">
+    SELECT p.*, c.name AS categoryName
+    FROM products p
+    LEFT JOIN categories c ON p.category_id = c.id
+    WHERE 1=1
+  <if test="keyword != null and keyword != ''">
+    AND (p.name LIKE CONCAT('%', #{keyword}, '%') 
+    OR p.furigana LIKE CONCAT('%', #{keyword}, '%'))
+  </if>
+  <if test="categoryId != null">
+    AND p.category_id = #{categoryId}
+  </if>
+</select>
+
+<select id="findSuggestions" resultType="Product">
+  SELECT id, name FROM products
+  WHERE name LIKE CONCAT(#{keyword}, '%')
+  ORDER BY name
+  LIMIT 10
+</select>
+
+</mapper>

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.app.mapper.OrderMapper">
+
+<!-- 注文を登録 -->
+<insert id="insertOrder" useGeneratedKeys="true" keyProperty="id">
+    INSERT INTO orders (login_id, order_date) 
+    VALUES (#{loginId}, #{orderDate})
+  </insert>
+  
+<!-- 注文商品の明細(商品ID・数量)を登録 -->
+<insert id="insertOrderItem">
+    INSERT INTO order_items (order_id, product_id, quantity)
+    VALUES (#{orderId}, #{productId}, #{quantity})
+  </insert>
+  
+  <!-- 注文一覧取得 -->
+<select id="findOrdersByLoginId" resultType="com.example.app.dto.OrderHistoryResponse">
+  SELECT id as orderId, order_date as orderDate
+  FROM orders
+  WHERE login_id = #{loginId}
+  ORDER BY order_date DESC
+</select>
+
+<!-- 注文商品詳細取得 -->
+<select id="findOrderItemsByOrderId" resultType="com.example.app.dto.OrderItemInfo">
+  SELECT oi.product_id as productId, p.name as productName, oi.quantity, p.price
+  FROM order_items oi
+  JOIN products p ON oi.product_id = p.id
+  WHERE oi.order_id = #{orderId}
+</select>
+
+</mapper>
